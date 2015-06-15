@@ -1,0 +1,60 @@
+# include <iostream>
+using namespace std;
+
+int L[100005], R[100005], A[100005];
+int N, inf=1e9;
+
+int F(int x){return x&-x;}
+
+void update(int x, int v){
+	A[x]=v;
+	int i=x;
+	while(i<=N){
+		L[i]=max(L[i], v);
+		i+=F(i);
+	}
+	i=x;
+	while(i){
+		R[i]=max(R[i], v);
+		i-=F(i);
+	}
+}
+
+int max(int l, int r){
+	int res=0, i=l;
+	while(i+F(i)<=r){
+		res=max(res, R[i]);
+		i+=F(i);
+	}
+	res=max(res, A[i-1]);
+	i=r;
+	while(i-F(i)>=l){
+		res=max(res, L[i]);
+		i-=F(i);
+	}
+	return res;
+}
+
+
+void build(){
+	for(int i=0; i<N; i++)
+		update(i+1, A[i]);
+}
+
+int main(){
+	int C, cmd, v, x, l, r;
+	scanf("%d %d", &N, &C);
+	for(int i=0; i<N; i++)
+		cin>>A[i];
+	build();
+	while(C--){
+		scanf("%d", &cmd);
+		if(cmd == 0)  {
+			scanf("%d %d", &v, &x);
+			update(x, v);
+		}else{
+			scanf("%d %d", &l, &r);
+			printf("%d\n", max(l, r));
+		}
+	}
+}
