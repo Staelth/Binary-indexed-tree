@@ -1,0 +1,51 @@
+# include <iostream>
+using namespace std;
+
+int BIT1[100005], BIT2[100005];
+int N;
+
+int F(int x){return x&-x;}
+
+int query(int* ft, int x){
+	int sum = 0;
+	while(x){
+		sum+=ft[x];
+		x-=F(x);
+	}
+	return sum;
+}
+
+int query(int x){
+	return query(BIT1, x) * x - query(BIT2, x);
+}
+
+int range_query(int l, int r){
+	return query(r) - query(l - 1);
+}
+
+void update(int* ft, int x, int v){
+	while(x<=N){
+		ft[x]+=v;
+		x+=F(x);
+	}
+}
+
+void range_update(int l, int r, int v){
+	update(BIT1, l, v);
+	update(BIT1, r + 1, -v);
+	update(BIT2, l, v * (l - 1));
+	update(BIT2, r + 1, -v * r);
+}
+
+int main(){
+	int C, p, q, cmd, v;
+	scanf("%d %d", &N, &C);
+	while(C--){
+		scanf("%d %d %d", &cmd, &p, &q);
+		if(cmd == 0)   {
+			scanf("%d", &v);
+			range_update(p, q, v);
+		}else
+			printf("%d\n", range_query(p, q));
+	}
+}
