@@ -1,0 +1,46 @@
+# include <iostream>
+using namespace std;
+
+int BIT[100005], A[100005];
+int N, inf=1e9;
+
+int F(int x){return x&-x;}
+
+int getmin(int r){
+	int res = inf;
+	while(r){
+		res=min(res, BIT[r]);
+		r-=F(r);
+	}
+	return res;
+}
+
+void update(int x, int v){
+	while(x<=N){
+		BIT[x]=min(BIT[x], v);
+		x+=F(x);
+	}
+}
+
+void build(){
+	for(int i=0; i<N; i++)
+		update(i+1, A[i]);
+}
+
+int main(){
+	int C, cmd, v, x, l, r;
+	scanf("%d %d", &N, &C);
+	for(int i=0; i<N; i++)
+		cin>>A[i];
+	build();
+	while(C--){
+		scanf("%d", &cmd);
+		if(cmd == 0)  {
+			scanf("%d %d", &v, &x);
+			update(x, v);
+		}else{
+			scanf("%d", &x);
+			printf("%d\n", getmin(x));
+		}
+	}
+}
