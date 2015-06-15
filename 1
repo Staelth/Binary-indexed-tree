@@ -1,0 +1,42 @@
+# include <iostream>
+using namespace std;
+
+int BIT[100005];
+int N;
+
+int F(int x){return x&-x;}
+
+int query(int x){
+	int sum = 0;
+	while(x){
+		sum+=BIT[x];
+		x-=F(x);
+	}
+	return sum;
+}
+
+int query(int l, int r){
+	return query(r) - query(l - 1);
+}
+
+void update(int x, int v){
+	while(x<=N){
+		BIT[x]+=v;
+		x+=F(x);
+	}
+}
+
+int main(){
+	int C, cmd, v, x, l, r;
+	scanf("%d %d", &N, &C);
+	while(C--){
+		scanf("%d", &cmd);
+		if(cmd == 0)   {
+			scanf("%d %d", &v, &x);
+			update(x, v);
+		}else{
+			scanf("%d %d", &l, &r);
+			printf("%d\n", query(l, r));
+		}
+	}
+}
